@@ -1,0 +1,19 @@
+{
+  "name": "slender-indexer",
+  "version": "1.0.0",
+  "repository": "git@github.com:eq-lab/slender-indexer.git",
+  "author": "EQ LAB",
+  "license": "ISC",
+  "dependencies": {
+    "@stellar/stellar-sdk": "^11.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.7",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
