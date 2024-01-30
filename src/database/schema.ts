@@ -1,5 +1,6 @@
-import { Schema, model } from "mongoose";
-import { ICollectionStatus, ISlenderEvent, ISlenderPosition, SlenderEventType } from "./types";
+import { Schema, model } from 'mongoose';
+
+import { ICollectionStatus, ISlenderEvent, ISlenderPosition, SlenderEventType } from './types';
 
 const EventSchema = new Schema<ISlenderEvent>(
   {
@@ -120,6 +121,6 @@ const CollectionStatusSchema = new Schema<ICollectionStatus>({
   },
 });
 
-export const SlenderEvent = model("Event", EventSchema);
-export const SlenderPosition = model("Position", PositionSchema);
-export const SlenderCollectionStatus = model("CollectionStatus", CollectionStatusSchema);
+export const SlenderEvent = model('Event', EventSchema);
+export const SlenderPosition = model('Position', PositionSchema);
+export const SlenderCollectionStatus = model('CollectionStatus', CollectionStatusSchema);

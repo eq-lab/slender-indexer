@@ -1,4 +1,4 @@
-import { SlenderEventType } from "./eventType";
+import { SlenderEventType } from './eventType';
 
 export interface ISlenderEvent {
   // required transaction fields
