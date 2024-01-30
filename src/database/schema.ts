@@ -1,41 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
+import { ICollectionStatus, ISlenderEvent, ISlenderPosition, SlenderEventType } from "./types";
 
-export enum EventType {
-  Buy = "buy",
-  Sell = "sell",
-}
-
-interface Event {
-  // required transaction fields
-  ledger: number;
-  hash: string;
-  createdAt: Date;
-  type: EventType;
-
-  to?: string;
-  who?: string;
-  asset?: string;
-  amount?: number;
-  premium?: number;
-  receiver?: string;
-  treasury?: string;
-  coveredDebt?: number;
-  liquidatedCollat?: number;
-
-  // collateral parameters
-  liquidityCap?: number;
-  liquidationOrder?: number;
-  utilCap?: number;
-  discount?: number;
-
-  // interest rate parameters
-  alpha?: number;
-  initialRate?: number;
-  maxRate?: number;
-  scalingCoeff?: number;
-}
-
-const schema = new Schema<Event>(
+const EventSchema = new Schema<ISlenderEvent>(
   {
     ledger: {
       type: Number,
@@ -51,7 +17,7 @@ const schema = new Schema<Event>(
     },
     type: {
       type: String,
-      enum: EventType,
+      enum: SlenderEventType,
       required: true,
     },
     to: {
@@ -128,4 +94,32 @@ const schema = new Schema<Event>(
   },
 );
 
-export const Event = mongoose.model("Event", schema);
+const PositionSchema = new Schema<ISlenderPosition>({
+  who: {
+    type: String,
+    required: true,
+  },
+  npv: {
+    type: Number,
+    required: true,
+  },
+  discountedCollateral: {
+    type: Number,
+    required: true,
+  },
+  debt: {
+    type: Number,
+    required: true,
+  },
+});
+
+const CollectionStatusSchema = new Schema<ICollectionStatus>({
+  ledger: {
+    type: Number,
+    required: true,
+  },
+});
+
+export const SlenderEvent = model("Event", EventSchema);
+export const SlenderPosition = model("Position", PositionSchema);
+export const SlenderCollectionStatus = model("CollectionStatus", CollectionStatusSchema);
