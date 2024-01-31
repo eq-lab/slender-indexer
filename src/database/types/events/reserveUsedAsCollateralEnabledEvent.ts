@@ -7,10 +7,11 @@ export class ReserveUsedAsCollateralEnabledEvent extends BaseEvent {
   who?: string;
   asset?: string;
 
-  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[]) {
+  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[], data: any) {
     super(record, SlenderEventType.ReserveUsedAsCollateralEnabled);
 
     this.who = topics[1];
-    this.asset = topics[2];
+
+    this.asset = data;
   }
 }

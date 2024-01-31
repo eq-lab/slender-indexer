@@ -10,13 +10,14 @@ export class CollatConfigChangeEvent extends BaseEvent {
   utilCap?: number;
   discount?: number;
 
-  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[]) {
+  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[], data: any[]) {
     super(record, SlenderEventType.CollatConfigChange);
 
     this.asset = topics[1];
-    this.liquidityCap = topics[2];
-    this.liquidationOrder = topics[3];
-    this.utilCap = topics[4];
-    this.discount = topics[5];
+
+    this.liquidityCap = data[0];
+    this.liquidationOrder = data[1];
+    this.utilCap = data[2];
+    this.discount = data[3];
   }
 }

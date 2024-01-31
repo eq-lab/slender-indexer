@@ -11,14 +11,15 @@ export class InitializedEvent extends BaseEvent {
   maxRate?: number;
   scalingCoeff?: number;
 
-  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[]) {
+  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[], data: any[]) {
     super(record, SlenderEventType.Initialized);
 
     this.admin = topics[1];
     this.treasury = topics[2];
-    this.alpha = topics[3];
-    this.initialRate = topics[4];
-    this.maxRate = topics[5];
-    this.scalingCoeff = topics[6];
+
+    this.alpha = data[0];
+    this.initialRate = data[1];
+    this.maxRate = data[2];
+    this.scalingCoeff = data[3];
   }
 }

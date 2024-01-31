@@ -9,12 +9,13 @@ export class WithdrawEvent extends BaseEvent {
   to?: string;
   amount?: number;
 
-  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[]) {
+  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[], data: any[]) {
     super(record, SlenderEventType.Withdraw);
 
     this.who = topics[1];
-    this.to = topics[2];
-    this.asset = topics[3];
-    this.amount = topics[4];
+
+    this.to = data[0];
+    this.asset = data[1];
+    this.amount = data[2];
   }
 }

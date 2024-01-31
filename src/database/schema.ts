@@ -34,11 +34,11 @@ const EventSchema = new Schema<ISlenderEvent>(
       required: false,
     },
     amount: {
-      type: Number, // TODO: Decimal128?
+      type: String,
       required: false,
     },
     premium: {
-      type: Number, // TODO: Decimal128?
+      type: String,
       required: false,
     },
     receiver: {
@@ -50,15 +50,15 @@ const EventSchema = new Schema<ISlenderEvent>(
       required: false,
     },
     coveredDebt: {
-      type: Number, // TODO: Decimal128?
+      type: String,
       required: false,
     },
     liquidatedCollat: {
-      type: Number, // TODO: Decimal128?
+      type: String,
       required: false,
     },
     liquidityCap: {
-      type: Number, // TODO: Decimal128?
+      type: String,
       required: false,
     },
     liquidationOrder: {

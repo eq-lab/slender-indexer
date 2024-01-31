@@ -15,7 +15,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "editor.rulers": [
-        110
+        120
     ],
     "editor.formatOnSave": true,
 }

@@ -8,11 +8,12 @@ export class DepositEvent extends BaseEvent {
   asset?: string;
   amount?: number;
 
-  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[]) {
+  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[], data: any[]) {
     super(record, SlenderEventType.Deposit);
 
     this.who = topics[1];
-    this.asset = topics[2];
-    this.amount = topics[3];
+
+    this.asset = data[0];
+    this.amount = data[1];
   }
 }

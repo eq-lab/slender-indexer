@@ -42,18 +42,22 @@ export class DbService {
   }
 
   public async savePositions(positions: ISlenderPosition[]): Promise<void> {
+    if (positions.length === 0) return;
+
     await SlenderPosition.deleteMany();
     await SlenderPosition.insertMany(positions);
   }
 
   public async saveStatus(ledger: number): Promise<void> {
     await SlenderCollectionStatus.deleteMany();
-    new SlenderCollectionStatus({
+    await new SlenderCollectionStatus({
       ledger: ledger,
-    });
+    }).save();
   }
 
   public async saveEvents(events: ISlenderEvent[]): Promise<void> {
+    if (events.length === 0) return;
+
     await SlenderEvent.insertMany(events);
   }
 

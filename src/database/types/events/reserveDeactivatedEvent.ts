@@ -6,7 +6,7 @@ import { SlenderEventType } from '../eventType';
 export class ReserveDeactivatedEvent extends BaseEvent {
   asset?: string;
 
-  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[]) {
+  constructor(record: Horizon.ServerApi.TransactionRecord, topics: any[], data: any[]) {
     super(record, SlenderEventType.ReserveDeactivated);
 
     this.asset = topics[1];

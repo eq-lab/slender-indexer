@@ -20,18 +20,24 @@ export { ISlenderPosition } from './position';
 export { ICollectionStatus } from './collectionStatus';
 
 export const SlenderEvents = new Map([
-  [SlenderEventType.Repay, (r, t) => new RepayEvent(r, t)],
-  [SlenderEventType.Borrow, (r, t) => new BorrowEvent(r, t)],
-  [SlenderEventType.Deposit, (r, t) => new DepositEvent(r, t)],
-  [SlenderEventType.Withdraw, (r, t) => new WithdrawEvent(r, t)],
-  [SlenderEventType.FlashLoan, (r, t) => new FlashLoanEvent(r, t)],
-  [SlenderEventType.Liquidation, (r, t) => new LiquidationEvent(r, t)],
-  [SlenderEventType.Initialized, (r, t) => new InitializedEvent(r, t)],
-  [SlenderEventType.BorrowingEnabled, (r, t) => new BorrowingEnabledEvent(r, t)],
-  [SlenderEventType.BorrowingDisabled, (r, t) => new BorrowingDisabledEvent(r, t)],
-  [SlenderEventType.ReserveActivated, (r, t) => new ReserveActivatedEvent(r, t)],
-  [SlenderEventType.ReserveDeactivated, (r, t) => new ReserveDeactivatedEvent(r, t)],
-  [SlenderEventType.CollatConfigChange, (r, t) => new CollatConfigChangeEvent(r, t)],
-  [SlenderEventType.ReserveUsedAsCollateralEnabled, (r, t) => new ReserveUsedAsCollateralEnabledEvent(r, t)],
-  [SlenderEventType.ReserveUsedAsCollateralDisabled, (r, t) => new ReserveUsedAsCollateralDisabledEvent(r, t)],
+  [`${SlenderEventType.Repay}`, (event, topics, data) => new RepayEvent(event, topics, data)],
+  [`${SlenderEventType.Borrow}`, (event, topics, data) => new BorrowEvent(event, topics, data)],
+  [`${SlenderEventType.Deposit}`, (event, topics, data) => new DepositEvent(event, topics, data)],
+  [`${SlenderEventType.Withdraw}`, (event, topics, data) => new WithdrawEvent(event, topics, data)],
+  [`${SlenderEventType.FlashLoan}`, (event, topics, data) => new FlashLoanEvent(event, topics, data)],
+  [`${SlenderEventType.Liquidation}`, (event, topics, data) => new LiquidationEvent(event, topics, data)],
+  [`${SlenderEventType.Initialized}`, (event, topics, data) => new InitializedEvent(event, topics, data)],
+  [`${SlenderEventType.BorrowingEnabled}`, (event, topics, data) => new BorrowingEnabledEvent(event, topics, data)],
+  [`${SlenderEventType.BorrowingDisabled}`, (event, topics, data) => new BorrowingDisabledEvent(event, topics, data)],
+  [`${SlenderEventType.ReserveActivated}`, (event, topics, data) => new ReserveActivatedEvent(event, topics, data)],
+  [`${SlenderEventType.ReserveDeactivated}`, (event, topics, data) => new ReserveDeactivatedEvent(event, topics, data)],
+  [`${SlenderEventType.CollatConfigChange}`, (event, topics, data) => new CollatConfigChangeEvent(event, topics, data)],
+  [
+    `${SlenderEventType.ReserveUsedAsCollateralEnabled}`,
+    (event, topics, data) => new ReserveUsedAsCollateralEnabledEvent(event, topics, data),
+  ],
+  [
+    `${SlenderEventType.ReserveUsedAsCollateralDisabled}`,
+    (event, topics, data) => new ReserveUsedAsCollateralDisabledEvent(event, topics, data),
+  ],
 ]);

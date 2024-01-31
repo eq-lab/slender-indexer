@@ -5,6 +5,7 @@
   "author": "EQ LAB",
   "license": "ISC",
   "scripts": {
+    "start": "tsc --build --clean && tsc --build && node dist/index.js",
     "lint": "prettier --write"
   },
   "dependencies": {
