@@ -19,6 +19,7 @@ const EventSchema = new Schema<ISlenderEvent>(
     type: {
       type: String,
       enum: SlenderEventType,
+      index: true,
       required: true,
     },
     to: {
@@ -98,18 +99,19 @@ const EventSchema = new Schema<ISlenderEvent>(
 const PositionSchema = new Schema<ISlenderPosition>({
   who: {
     type: String,
+    index: true,
     required: true,
   },
   npv: {
-    type: Number,
+    type: String,
     required: true,
   },
   discountedCollateral: {
-    type: Number,
+    type: String,
     required: true,
   },
   debt: {
-    type: Number,
+    type: String,
     required: true,
   },
 });

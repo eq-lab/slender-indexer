@@ -1,10 +1,10 @@
 import { connect, connection, disconnect } from 'mongoose';
 
 import { SlenderCollectionStatus, SlenderEvent, SlenderPosition } from './schema';
-import { ICollectionStatus, ISlenderEvent, ISlenderPosition } from './types';
+import { ICollectionStatus, ISlenderEvent, ISlenderPosition, SlenderEventType } from './types';
 
 export class DbService {
-  public async init(connsectionString: string, user: string, password: string): Promise<DbService> {
+  async init(connsectionString: string, user: string, password: string): Promise<DbService> {
     connection.on('error', async (error) => {
       console.error('Error in MongoDb connection: ' + error);
       await disconnect();
@@ -21,48 +21,64 @@ export class DbService {
     connection.on('disconnected', async () => {
       console.log('MongoDB disconnected!');
 
-      await connect(`${connsectionString}`, {
-        user: user,
-        pass: password,
-        authSource: 'admin',
-        retryReads: true,
-        retryWrites: true,
-      });
+      await mongoConnect(connsectionString, user, password);
     });
 
-    await connect(`${connsectionString}`, {
-      user: user,
-      pass: password,
-      authSource: 'admin',
-      retryReads: true,
-      retryWrites: true,
-    });
+    await mongoConnect(connsectionString, user, password);
 
     return this;
   }
 
-  public async savePositions(positions: ISlenderPosition[]): Promise<void> {
+  async upsertPositions(positions: ISlenderPosition[]): Promise<void> {
     if (positions.length === 0) return;
 
-    await SlenderPosition.deleteMany();
-    await SlenderPosition.insertMany(positions);
+    const bulk = positions.map((p) => ({
+      updateOne: {
+        filter: { who: p.who },
+        update: p,
+        upsert: true,
+      },
+    }));
+
+    await SlenderPosition.bulkWrite(bulk);
   }
 
-  public async saveStatus(ledger: number): Promise<void> {
+  async insertStatus(ledger: number): Promise<void> {
     await SlenderCollectionStatus.deleteMany();
     await new SlenderCollectionStatus({
       ledger: ledger,
     }).save();
   }
 
-  public async saveEvents(events: ISlenderEvent[]): Promise<void> {
+  async insertEvents(events: ISlenderEvent[]): Promise<void> {
     if (events.length === 0) return;
 
     await SlenderEvent.insertMany(events);
   }
 
-  public async getCollectionStatus(): Promise<ICollectionStatus> {
+  async getCollectionStatus(): Promise<ICollectionStatus> {
     const status = await SlenderCollectionStatus.findOne().exec();
+
     return status;
   }
+
+  async getUniqueBorrowets(): Promise<string[]> {
+    const borrowers = await SlenderEvent.find({ type: SlenderEventType.Borrow }).distinct('who').exec();
+
+    return borrowers;
+  }
+
+  async deletePositionsExceptBorrowers(borrowers: string[]): Promise<void> {
+    await SlenderPosition.deleteMany({ who: { $nin: borrowers || [] } });
+  }
 }
+
+const mongoConnect = async (connsectionString: string, user: string, password: string): Promise<void> => {
+  await connect(`${connsectionString}`, {
+    user: user,
+    pass: password,
+    authSource: 'admin',
+    retryReads: true,
+    retryWrites: true,
+  });
+};

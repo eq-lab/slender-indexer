@@ -11,15 +11,15 @@ export interface ISlenderEvent {
   to?: string;
   who?: string;
   asset?: string;
-  amount?: string;
-  premium?: string;
+  amount?: bigint;
+  premium?: bigint;
   receiver?: string;
   treasury?: string;
-  coveredDebt?: string;
-  liquidatedCollat?: string;
+  coveredDebt?: bigint;
+  liquidatedCollat?: bigint;
 
   // collateral parameters
-  liquidityCap?: string;
+  liquidityCap?: bigint;
   liquidationOrder?: number;
   utilCap?: number;
   discount?: number;

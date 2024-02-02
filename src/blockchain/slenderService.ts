@@ -1,19 +1,34 @@
-import { Horizon, SorobanRpc, humanizeEvents, xdr } from '@stellar/stellar-sdk';
+import {
+  Address,
+  Contract,
+  Horizon,
+  SorobanRpc,
+  TimeoutInfinite,
+  TransactionBuilder,
+  humanizeEvents,
+  xdr,
+} from '@stellar/stellar-sdk';
 
-import { ISlenderEvent, SlenderEvents } from '../database/types';
+import { ISlenderEvent, ISlenderPosition, SlenderEvents } from '../database/types';
+import { convertScvToJs } from './converter';
+import { ISlenderAccountPosition } from './types/slenderAccountPosition';
 
 export class SlenderService {
   horizon: Horizon.Server;
   soroban: SorobanRpc.Server;
   contractId: string;
+  caller: string;
+  passPhrase: string;
 
-  constructor(horizonUri: string, sorobanRpcUri: string, contractId: string) {
+  constructor(horizonUri: string, sorobanRpcUri: string, contractId: string, caller: string, passPhrase: string) {
     this.horizon = new Horizon.Server(horizonUri);
     this.soroban = new SorobanRpc.Server(sorobanRpcUri);
     this.contractId = contractId;
+    this.caller = caller;
+    this.passPhrase = passPhrase;
   }
 
-  public async getEvents(ledger: number): Promise<ISlenderEvent[]> {
+  async getEvents(ledger: number): Promise<ISlenderEvent[]> {
     const result = [];
     const transactions = await this.horizon.transactions().forLedger(ledger).call();
 
@@ -32,7 +47,66 @@ export class SlenderService {
     return result;
   }
 
-  public async getLatestLedger(): Promise<number> {
+  async getPositions(borrowers: string[]): Promise<ISlenderPosition[]> {
+    const tasks = borrowers.map((b) =>
+      fetch(
+        this.soroban,
+        this.caller,
+        this.passPhrase,
+        this.contractId,
+        'account_position',
+        Address.fromString(b).toScVal(),
+      )
+        .then((p) => ({ borrower: b, position: p }))
+        .catch(() => undefined),
+    );
+
+    const positions = (await Promise.all(tasks))
+      .filter((t) => !!t)
+      .map((t) => {
+        const position = convertScvToJs<ISlenderAccountPosition>(t.position);
+        return <ISlenderPosition>{
+          who: t.borrower,
+          discountedCollateral: position.discounted_collateral,
+          debt: position.debt,
+          npv: position.npv,
+        };
+      });
+
+    return positions;
+  }
+
+  async getLatestLedger(): Promise<number> {
     return (await this.soroban.getLatestLedger()).sequence;
   }
 }
+
+const fetch = async (
+  soroban: SorobanRpc.Server,
+  caller: string,
+  passPhrase: string,
+  contractId: string,
+  method: string,
+  ...args: xdr.ScVal[]
+): Promise<xdr.ScVal> => {
+  const source = await soroban.getAccount(caller);
+  const contract = new Contract(contractId);
+
+  const operation = new TransactionBuilder(source, {
+    fee: '100',
+    networkPassphrase: passPhrase,
+  })
+    .addOperation(contract.call(method, ...(args || [])))
+    .setTimeout(TimeoutInfinite)
+    .build();
+
+  const simulated = await soroban.simulateTransaction(operation);
+
+  if (SorobanRpc.Api.isSimulationError(simulated)) {
+    throw new Error(simulated.error);
+  } else if (!simulated.result) {
+    throw new Error(`invalid simulation: no result in ${simulated}`);
+  }
+
+  return simulated.result.retval;
+};

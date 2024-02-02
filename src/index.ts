@@ -9,6 +9,8 @@ export async function main() {
     process.env.HORIZON_URL,
     process.env.SOROBAN_RPC_URL,
     process.env.SLENDER_POOL_CONTRACT_ID,
+    process.env.SOROBAN_CALLER_ADDRESS,
+    process.env.SOROBAN_RPC_PASSPHRASE,
   );
   const dbService = await new DbService().init(
     process.env.MONGO_CONNECTION_STRING,
@@ -31,11 +33,22 @@ export async function main() {
 
     console.log(`Ledger processed: ${ledger}, events processed: ${events.length}, latest ledger: ${latestLedger}`);
 
-    await dbService.saveEvents(events);
-    await dbService.saveStatus(++ledger);
-  }
+    await dbService.insertEvents(events);
+    await dbService.insertStatus(++ledger);
 
-  // TODO: borrower's positions
+    const borrowers = await dbService.getUniqueBorrowets();
+    const positions = await slenderService.getPositions(borrowers);
+
+    const validPositions = positions.filter((p) => p.debt !== 0n && p.discountedCollateral !== 0n);
+    const validBorrowers = validPositions.map((vp) => vp.who);
+
+    console.log(`Positions processed: ${validPositions.length}`);
+
+    await dbService.deletePositionsExceptBorrowers(validBorrowers);
+    await dbService.upsertPositions(validPositions);
+
+    ledger++;
+  }
 }
 
 main()
