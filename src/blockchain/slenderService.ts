@@ -47,8 +47,8 @@ export class SlenderService {
     return result;
   }
 
-  async getPositions(borrowers: string[]): Promise<ISlenderPosition[]> {
-    const tasks = borrowers.map((b) =>
+  async getPositions(lenders: string[]): Promise<ISlenderPosition[]> {
+    const tasks = lenders.map((b) =>
       fetch(
         this.soroban,
         this.caller,
@@ -57,7 +57,7 @@ export class SlenderService {
         'account_position',
         Address.fromString(b).toScVal(),
       )
-        .then((p) => ({ borrower: b, position: p }))
+        .then((p) => ({ lender: b, position: p }))
         .catch(() => undefined),
     );
 
@@ -66,7 +66,7 @@ export class SlenderService {
       .map((t) => {
         const position = convertScvToJs<ISlenderAccountPosition>(t.position);
         return <ISlenderPosition>{
-          who: t.borrower,
+          who: t.lender,
           discountedCollateral: position.discounted_collateral,
           debt: position.debt,
           npv: position.npv,

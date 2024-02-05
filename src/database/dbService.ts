@@ -62,13 +62,13 @@ export class DbService {
     return status;
   }
 
-  async getUniqueBorrowets(): Promise<string[]> {
-    const borrowers = await SlenderEvent.find({ type: SlenderEventType.Borrow }).distinct('who').exec();
+  async getUniqueLenders(): Promise<string[]> {
+    const lenders = await SlenderEvent.find({ type: SlenderEventType.Deposit }).distinct('who').exec();
 
-    return borrowers;
+    return lenders;
   }
 
-  async deletePositionsExceptBorrowers(borrowers: string[]): Promise<void> {
+  async deletePositionsExceptLenders(borrowers: string[]): Promise<void> {
     await SlenderPosition.deleteMany({ who: { $nin: borrowers || [] } });
   }
 }

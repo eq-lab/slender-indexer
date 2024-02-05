@@ -36,15 +36,15 @@ export async function main() {
     await dbService.insertEvents(events);
     await dbService.insertStatus(++ledger);
 
-    const borrowers = await dbService.getUniqueBorrowets();
-    const positions = await slenderService.getPositions(borrowers);
+    const lenders = await dbService.getUniqueLenders();
+    const positions = await slenderService.getPositions(lenders);
 
-    const validPositions = positions.filter((p) => p.debt !== 0n && p.discountedCollateral !== 0n);
-    const validBorrowers = validPositions.map((vp) => vp.who);
+    const validPositions = positions.filter((p) => p.debt !== 0n || p.discountedCollateral !== 0n);
+    const validLenders = validPositions.map((vp) => vp.who);
 
     console.log(`Positions processed: ${validPositions.length}`);
 
-    await dbService.deletePositionsExceptBorrowers(validBorrowers);
+    await dbService.deletePositionsExceptLenders(validLenders);
     await dbService.upsertPositions(validPositions);
 
     ledger++;
