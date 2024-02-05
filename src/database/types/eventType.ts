@@ -1,0 +1,16 @@
+export enum SlenderEventType {
+  Repay = 'repay',
+  Borrow = 'borrow',
+  Deposit = 'deposit',
+  Withdraw = 'withdraw',
+  FlashLoan = 'flash_loan',
+  Liquidation = 'liquidation',
+  Initialized = 'initialize',
+  BorrowingEnabled = 'borrowing_enabled',
+  BorrowingDisabled = 'borrowing_disabled',
+  ReserveActivated = 'reserve_activated',
+  ReserveDeactivated = 'reserve_deactivated',
+  CollatConfigChange = 'collat_config_change',
+  ReserveUsedAsCollateralEnabled = 'reserve_used_as_coll_enabled',
+  ReserveUsedAsCollateralDisabled = 'reserve_used_as_coll_disabled',
+}

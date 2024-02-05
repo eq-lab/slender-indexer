@@ -4,15 +4,25 @@
   "repository": "git@github.com:eq-lab/slender-indexer.git",
   "author": "EQ LAB",
   "license": "ISC",
+  "scripts": {
+    "start": "tsc --build --clean && tsc --build && node dist/index.js",
+    "lint": "prettier --write"
+  },
   "dependencies": {
-    "@stellar/stellar-sdk": "^11.2.1"
+    "@stellar/stellar-sdk": "^11.2.1",
+    "bigint-conversion": "^2.4.3",
+    "dotenv": "^16.4.1",
+    "mongoose": "^8.1.1"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20.11.7",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

@@ -1,15 +1,19 @@
 bracketSpacing: true
-printWidth: 110
-proseWrap: "always"
-singleQuote: false
+printWidth: 120
+proseWrap: 'always'
+singleQuote: true
 tabWidth: 2
-trailingComma: "all"
+trailingComma: 'all'
 endOfLine: lf
-
-overrides:
-  - files: "*.ts"
-    options:
-      importOrder: ["<THIRD_PARTY_MODULES>", "^[./]"]
-      importOrderParserPlugins: ["typescript"]
-      importOrderSeparation: true
-      importOrderSortSpecifiers: true
+plugins:
+  - '@trivago/prettier-plugin-sort-imports'
+importOrder:
+  - '^@core/(.*)$'
+  - '<THIRD_PARTY_MODULES>'
+  - '^@server/(.*)$'
+  - '^@ui/(.*)$'
+  - '^[./]'
+importOrderParserPlugins:
+  - 'typescript'
+importOrderSeparation: true
+importOrderSortSpecifiers: true
